@@ -3,24 +3,19 @@ import https from '../axios';
 
 const Home = () => {
   const [playlists, setPlaylists] = useState({
-   goodAfter:[],
     topMixes: [],
     madeForYou: [],
     recentlyPlayed: [],
     jumpBackIn: [],
     uniquelyYours: [],
+    featuredPlaylists: [],
   });
 
   useEffect(() => {
     const fetchPlaylists = async () => {
       const token = localStorage.getItem('spotify_token');
       try {
-        const [goodAfterResponse, topMixesResponse, madeForYouResponse, recentlyPlayedResponse, jumpBackInResponse, uniquelyYoursResponse] = await Promise.all([
-          https.get('https://api.spotify.com/v1/browse/featured-playlists', {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }),
+        const [topMixesResponse, madeForYouResponse, recentlyPlayedResponse, jumpBackInResponse, uniquelyYoursResponse, featuredPlaylistsResponse] = await Promise.all([
           https.get('https://api.spotify.com/v1/browse/categories/toplists/playlists', {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -46,15 +41,20 @@ const Home = () => {
               Authorization: `Bearer ${token}`,
             },
           }),
+          https.get('https://api.spotify.com/v1/browse/featured-playlists', {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }),
         ]);
 
         setPlaylists({
-          goodAfter: goodAfterResponse.data.playlists.items.slice(0, 6),
           topMixes: topMixesResponse.data.playlists.items.slice(0, 4),
           madeForYou: madeForYouResponse.data.playlists.items.slice(0, 4),
           recentlyPlayed: recentlyPlayedResponse.data.playlists.items.slice(0, 4),
           jumpBackIn: jumpBackInResponse.data.playlists.items.slice(0, 4),
           uniquelyYours: uniquelyYoursResponse.data.playlists.items.slice(0, 4),
+          featuredPlaylists: featuredPlaylistsResponse.data.playlists.items.slice(0, 6),
         });
       } catch (error) {
         console.error('Error fetching playlists:', error);
@@ -64,52 +64,102 @@ const Home = () => {
     fetchPlaylists();
   }, []);
 
-  const renderPlaylistCard = (playlist, index) => (
-    <div
-      key={index}
-      className="bg-gray-800 rounded-lg p-4 hover:bg-gray-700 transition duration-300 flex flex-col justify-between"
-    >
-      <img
-        src={playlist.images[0]?.url}
-        alt={playlist.name}
-        className="w-full h-40 rounded-md mb-2 object-cover"
-      />
-      <div className="flex flex-col mt-2">
-        <span className="text-lg font-bold">{playlist.name}</span>
-        <span className="text-sm text-gray-400">Artist names here...</span>
-      </div>
-    </div>
-  );
-
   return (
     <div className="bg-gray-900 min-h-screen text-white p-6">
       <h2 className="text-2xl font-bold mb-6">Good afternoon</h2>
-      <div >
-        {playlists.goodAfter.map(renderPlaylistCard)}
+
+      <div className="grid grid-cols-2 gap-4 mb-8">
+        {playlists.featuredPlaylists.map((playlist, index) => (
+          <div
+            key={index}
+            className="bg-gray-800 rounded-lg p-4 flex items-center hover:bg-gray-700 transition duration-300"
+          >
+            <img
+              src={playlist.images[0]?.url}
+              alt={playlist.name}
+              className="w-16 h-14 rounded-md mr-4" 
+            />
+            <span className="text-sm font-medium">{playlist.name}</span>
+          </div>
+        ))}
       </div>
+
       <h3 className="text-xl font-bold mb-4">Your Top Mixes</h3>
       <div className="grid grid-cols-4 gap-4 mb-8">
-        {playlists.topMixes.map(renderPlaylistCard)}
+        {playlists.topMixes.map((playlist, index) => (
+          <div
+            key={index}
+            className="bg-gray-800 rounded-lg p-4 flex flex-col items-center hover:bg-gray-700 transition duration-300"
+          >
+            <img
+              src={playlist.images[0]?.url}
+              alt={playlist.name}
+              className="w-full h-40 rounded-md mb-2"
+            />
+            <span className="text-sm font-medium text-center">{playlist.name}</span>
+          </div>
+        ))}
       </div>
 
       <h3 className="text-xl font-bold mb-4">Made For You</h3>
       <div className="grid grid-cols-4 gap-4 mb-8">
-        {playlists.madeForYou.map(renderPlaylistCard)}
+        {playlists.madeForYou.map((playlist, index) => (
+          <div
+            key={index}
+            className="bg-gray-800 rounded-lg p-4 flex flex-col items-center hover:bg-gray-700 transition duration-300"
+          >
+            <img
+              src={playlist.images[0]?.url}
+              alt={playlist.name}
+              className="w-full h-40 rounded-md mb-2"
+            />
+            <span className="text-sm font-medium text-center">{playlist.name}</span>
+          </div>
+        ))}
       </div>
 
       <h3 className="text-xl font-bold mb-4">Recently Played</h3>
       <div className="grid grid-cols-4 gap-4 mb-8">
-        {playlists.recentlyPlayed.map(renderPlaylistCard)}
+        {playlists.recentlyPlayed.map((playlist, index) => (
+          <div
+            key={index}
+            className="bg-gray-800 rounded-lg p-4 flex flex-col items-center hover:bg-gray-700 transition duration-300"
+          >
+            <img
+              src={playlist.images[0]?.url}
+              alt={playlist.name}
+              className="w-full h-40 rounded-md mb-2"
+            />
+            <span className="text-sm font-medium text-center">{playlist.name}</span>
+          </div>
+        ))}
       </div>
 
       <h3 className="text-xl font-bold mb-4">Jump Back In</h3>
       <div className="grid grid-cols-4 gap-4 mb-8">
-        {playlists.jumpBackIn.map(renderPlaylistCard)}
+        {playlists.jumpBackIn.map((playlist, index) => (
+          <div
+            key={index}
+            className="bg-gray-800 rounded-lg p-4 flex flex-col items-center hover:bg-gray-700 transition duration-300"
+          >
+            <img
+              src={playlist.images[0]?.url}
+              alt={playlist.name}
+              className="w-full h-40 rounded-md mb-2"
+            />
+            <span className="text-sm font-medium text-center">{playlist.name}</span>
+          </div>
+        ))}
       </div>
 
       <h3 className="text-xl font-bold mb-4">Uniquely Yours</h3>
       <div className="grid grid-cols-4 gap-4 mb-8">
-        {playlists.uniquelyYours.map(renderPlaylistCard)}
+        {playlists.uniquelyYours.map((playlist, index) => (
+          <div key={index} className="bg-gray-800 rounded-lg p-4 flex flex-col items-center hover:bg-gray-700 transition duration-300">
+            <img src={playlist.images[0]?.url} alt={playlist.name} className="w-full h-40 rounded-md mb-2" />
+            <span className="text-sm font-medium text-center">{playlist.name}</span>
+          </div>
+        ))}
       </div>
     </div>
   );
