@@ -23,7 +23,7 @@ function App() {
         <Routes>
           <Route path='/' element={<Home></Home>}></Route>
           <Route path='/likes' element={<Likes></Likes>}></Route>
-          <Route path="/details/:playlistId" element={<Details></Details>}></Route>
+          <Route path="/playlist/:id" element={<Details />} />
         </Routes>
       </MainLayout>
     </div>
