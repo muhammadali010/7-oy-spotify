@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom'; // react-router-dom dan Link import qilish
+import { Link } from 'react-router-dom'; 
 import https from '../axios';
 
 const Home = () => {
