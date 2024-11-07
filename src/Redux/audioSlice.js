@@ -24,11 +24,12 @@ const audioSlice = createSlice({
       state.playlist = action.payload;
     },
     togglePlayPause: (state) => {
-      state.isPlaying = !state.isPlaying;
-      if (state.audio) {
-        state.isPlaying ? state.audio.play() : state.audio.pause();
-      }
-    },
+        if (state.audio) {
+          state.isPlaying = !state.isPlaying;
+          state.isPlaying ? state.audio.play() : state.audio.pause();
+        }
+      },
+      
   },
 });
 

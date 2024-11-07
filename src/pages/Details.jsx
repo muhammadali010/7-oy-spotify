@@ -1,13 +1,14 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { setAudio, setSelectedTrack, togglePlayPause, setPlaylist } from '../Redux/audioSlice';
+import { setSelectedTrack, togglePlayPause, setPlaylist } from '../Redux/audioSlice';
 import https from '../axios';
 
 const Details = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
-  const { audio, isPlaying, selectedTrack, playlist } = useSelector((state) => state.audio);
+  const { isPlaying, selectedTrack, playlist } = useSelector((state) => state.audio);
+  const audioRef = useRef(null); 
 
   useEffect(() => {
     const fetchPlaylistDetails = async () => {
@@ -26,16 +27,34 @@ const Details = () => {
 
     fetchPlaylistDetails();
   }, [id, dispatch]);
-
   useEffect(() => {
-    if (selectedTrack && selectedTrack.preview_url) {
-      const newAudio = new Audio(selectedTrack.preview_url);
-      dispatch(setAudio(newAudio)); 
+    if (playlist) {
+      console.log("Playlist data in UI component:", playlist); 
     }
-  }, [selectedTrack, dispatch]);
+  }, [playlist]);
+  
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+    }
+
+    if (selectedTrack && selectedTrack.preview_url) {
+      audioRef.current = new Audio(selectedTrack.preview_url); 
+      if (isPlaying) {
+        audioRef.current.play();
+      }
+    }
+  }, [selectedTrack, isPlaying]);
 
   const handlePlayPause = () => {
-    dispatch(togglePlayPause()); 
+    if (audioRef.current) {
+      if (isPlaying) {
+        audioRef.current.pause();
+      } else {
+        audioRef.current.play();
+      }
+    }
+    dispatch(togglePlayPause());
   };
 
   const handleSelectTrack = (track) => {
@@ -95,7 +114,7 @@ const Details = () => {
             <tr
               key={index}
               className="hover:bg-gray-800 cursor-pointer"
-              onClick={() => handleSelectTrack(trackItem.track)} 
+              onClick={() => handleSelectTrack(trackItem.track)}
             >
               <td className="py-3">{index + 1}</td>
               <td className="py-3 flex items-center gap-4">
