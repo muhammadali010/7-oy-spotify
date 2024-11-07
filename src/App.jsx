@@ -1,33 +1,31 @@
-import React, {useEffect} from 'react'
+import React, { useEffect } from 'react';
+import { Route, Routes } from 'react-router-dom';
 import MainLayout from './layouts/MainLayout';
-import { Route, Routes } from 'react-router-dom'
-import Likes from "./pages/Likes"
-import Home from "./pages/Home"
-import Details from "./pages/Details"
-import https from './axios'
+import Home from './pages/Home';
+import Details from './pages/Details';
+import Likes from './pages/Likes';
+import https from './axios';
 
 function App() {  
   useEffect(() => {
-  https.get('featured-playlists')
-  .then(response => {
-    console.log(response);
-  })
-  .catch(err => {
-    console.log(err);
-  })
-}, [])
+    https.get('featured-playlists')
+      .then(response => {
+        console.log(response);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  }, []);
 
   return (
-    <div>
-      <MainLayout>
-        <Routes>
-          <Route path='/' element={<Home></Home>}></Route>
-          <Route path='/likes' element={<Likes></Likes>}></Route>
-          <Route path="/playlist/:id" element={<Details />} />
-        </Routes>
-      </MainLayout>
-    </div>
-  )
+    <MainLayout>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/likes" element={<Likes />} />
+        <Route path="/playlist/:id" element={<Details />} />
+      </Routes>
+    </MainLayout>
+  );
 }
 
-export default App
+export default App;
